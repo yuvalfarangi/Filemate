@@ -1,0 +1,31 @@
+services:
+  web:
+    build: .
+    container_name: filemate_django
+    command: python manage.py runserver 0.0.0.0:8000
+    working_dir: /server
+    volumes:
+      - ./filemate_django_server:/server/filemate_django_server
+      - ./filemate_django_app:/server/filemate_django_app
+    environment:
+      - DATABASE_URL=postgres://postgres:yuval123@db:5432/filematedb
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: filemate_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: filematedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yuval123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
